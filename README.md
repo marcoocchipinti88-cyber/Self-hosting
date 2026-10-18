@@ -7,7 +7,7 @@ Homelab domestico, autonomo dai servizi cloud: mini PC + NAS, Proxmox, Docker, H
 - [Roadmap operativa con task da spuntare](docs/ROADMAP.md)
 
 ## Stato
-Fase 0 — decisioni e inventario.
+Fase 0 — decisioni e inventario. Dati raccolti: Vodafone dietro NAT, UDM-Pro, 1 mini PC, UPS, dominio gratuito. Da fare: scegliere il NAS e confermare il CGNAT.
 
 ## Regole
 - Tutto in git, nessun segreto in chiaro (vedi `.gitignore`).

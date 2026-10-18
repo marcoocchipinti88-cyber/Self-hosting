@@ -8,11 +8,12 @@ Legenda: 🔒 sicurezza · 💾 backup/ripristino · 📈 scalabilità · 🔔 m
 ---
 
 ## Fase 0 — Decisioni e inventario
-- [ ] 0.1 Elencare hardware: mini PC (CPU/RAM/NVMe), NAS (modello, dischi, RAID/ZFS), switch, router, UPS
-- [ ] 0.2 Verificare se l'operatore usa **CGNAT** (IP WAN del router ≠ IP pubblico visto da Internet)
-- [ ] 0.3 Decidere accesso esterno: Pangolin in casa / VPN WireGuard sul firewall / VPS (vedi ARCHITECTURE, punto 1)
-- [ ] 0.4 Decidere strategia Alexa (vedi ARCHITECTURE, punto 3)
-- [ ] 0.5 Scegliere il dominio (per HTTPS e DNS interno)
+- [x] 0.0 Dati di partenza raccolti: Vodafone senza IP statico dietro NAT, UDM-Pro, 1 mini PC, UPS presente, dominio gratuito
+- [ ] 0.1 Elencare hardware: specifiche del mini PC (CPU/RAM/NVMe), **scegliere il NAS** (modello, dischi, RAID/ZFS), switch
+- [ ] 0.2 Confermare il **CGNAT**: confrontare l'IP WAN mostrato dalla UDM-Pro con l'IP visto da Internet (se diversi, o se inizia con 100.64–100.127, c'è CGNAT); chiedere a Vodafone se offre IP pubblico
+- [ ] 0.3 Confermare la soluzione di accesso esterno (vedi ARCHITECTURE: consigliata B, VPS con Pangolin)
+- [ ] 0.4 Decidere strategia Alexa (vedi ARCHITECTURE, punto 2)
+- [ ] 0.5 Scegliere il provider del dominio gratuito (proposta: DuckDNS) e registrare il nome
 - [ ] 0.6 Definire piano IP e VLAN (MGMT, SERVER, IoT, OSPITI)
 - [ ] 0.7 Elencare i servizi desiderati, in ordine di priorità (da awesome-selfhosted)
 - [ ] 0.8 Definire RPO/RTO: quanti dati posso perdere (es. 24 h) e in quanto tempo devo ripartire (es. 2 h)
@@ -20,11 +21,11 @@ Legenda: 🔒 sicurezza · 💾 backup/ripristino · 📈 scalabilità · 🔔 m
 **DoD:** documento hardware + schema di rete + RPO/RTO scritti in `docs/`.
 
 ## Fase 1 — Rete e firewall 🔒
-- [ ] 1.1 Installare OPNsense (VM o macchina dedicata) e configurare WAN/LAN
+- [ ] 1.1 Configurare la **UDM-Pro**: account locale, aggiornare il firmware, disattivare l'accesso remoto via cloud Ubiquiti, attivare IDS/IPS
 - [ ] 1.2 Creare le VLAN e le regole: IoT e Ospiti non raggiungono MGMT/SERVER
 - [ ] 1.3 DNS locale con **AdGuard Home** o Unbound (nome host interni, blocco tracker)
 - [ ] 1.4 DHCP con prenotazioni IP fisse per server e NAS
-- [ ] 1.5 Regola per far funzionare mDNS/discovery tra IoT e Home Assistant (mDNS repeater, solo ciò che serve)
+- [ ] 1.5 Regola per far funzionare mDNS/discovery tra IoT e Home Assistant (mDNS della UDM-Pro, solo ciò che serve)
 - [ ] 1.6 Aggiornamenti firmware automatici/pianificati su router, switch, AP
 - [ ] 1.7 Configurazione del firewall esportata e salvata nei backup
 
@@ -57,11 +58,12 @@ Legenda: 🔒 sicurezza · 💾 backup/ripristino · 📈 scalabilità · 🔔 m
 **DoD:** creo una VM nuova dal template e metto in piedi uno stack di prova in meno di 15 minuti.
 
 ## Fase 4 — Accesso esterno sicuro 🔒
-- [ ] 4.1 Installare **Pangolin** (con Traefik e Gerbil) nella VM `docker-core`
-- [ ] 4.2 Certificati HTTPS validi (DNS challenge, wildcard)
+- [ ] 4.0 Se la fase 0.2 conferma il CGNAT: prendere un **VPS minimo** con IP pubblico (UE, ~€3–5/mese), con hardening di base (chiavi SSH, firewall, aggiornamenti automatici)
+- [ ] 4.1 Installare **Pangolin** (con Traefik e Gerbil) sul VPS
+- [ ] 4.2 Puntare il dominio gratuito al VPS; certificati HTTPS validi (DNS challenge, wildcard)
 - [ ] 4.3 SSO con **2FA obbligatoria** per tutti gli utenti
-- [ ] 4.4 Collegare i siti/servizi con gli agent (Newt) dove serve
-- [ ] 4.5 Aprire solo la porta/e strettamente necessarie sul router (UDP WireGuard / 443)
+- [ ] 4.4 Installare l'agent **Newt** nella VM `docker-core` per collegare i servizi di casa al VPS (tunnel in uscita)
+- [ ] 4.5 Nessuna porta aperta in ingresso sulla UDM-Pro; opzionale: UDM-Pro come client WireGuard verso il VPS per raggiungere tutta la LAN
 - [ ] 4.6 **CrowdSec** (o equivalente) davanti al proxy, con blocco automatico degli IP ostili
 - [ ] 4.7 Configurare client VPN (telefono/PC) e testare l'accesso da rete mobile
 - [ ] 4.8 Test dall'esterno: scansione porte, nessun servizio raggiungibile senza login
