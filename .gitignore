@@ -1,0 +1,17 @@
+# Segreti: mai in git in chiaro
+.env
+*.env
+!.env.example
+*.key
+*.pem
+*.age
+!*.sops.*
+secrets/*
+!secrets/*.sops.*
+id_*
+!id_*.pub
+
+# Dati runtime
+data/
+volumes/
+*.log
